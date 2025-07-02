@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+    stages {
+        stage('Package') {
+            parallel {
+                stage('CreateJarfile') {
+                    steps {
+                        container('maven') {
+                            sh 'mvn package -DskipTests'
+                        }
+                    }
+                }
+                stage('OCIImageBnP') {
+                    steps {
+                        container('kaniko') {
+                            sh '''
+                            /kaniko/executor \
+                            --dockerfile=$(pwd)/Dockerfile \
+                            --context=$(pwd) \
+                            --insecure \
+                            --skip-tls-verify \
+                            --cache=true \
+                            --destination=docker.io/xxxxxx/dso-demo:latest
+                            '''
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
