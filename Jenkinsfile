@@ -38,9 +38,9 @@ pipeline {
             }
           }
         }
+        stage('OCIImageBnP'){steps{container('kaniko'){sh'/kaniko/executor-f`pwd`/Dockerfile-c`pwd`--insecure--skip-tls-verify--cache=true--destination=docker.io/mahedimrifat/dso-demo'}}}
       }
     }
-
     stage('Deploy to Dev') {
       steps {
         // TODO
